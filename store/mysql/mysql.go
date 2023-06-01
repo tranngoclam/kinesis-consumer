@@ -48,7 +48,6 @@ func New(appName, tableName, connectionStr string, opts ...Option) (*Checkpoint,
 	}
 
 	conn, err := sql.Open("mysql", connectionStr)
-
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +85,6 @@ func (c *Checkpoint) GetCheckpoint(streamName, shardID string) (string, error) {
 	var sequenceNumber string
 	getCheckpointQuery := fmt.Sprintf(`SELECT sequence_number FROM %s WHERE namespace=? AND shard_id=?;`, c.tableName) //nolint: gas, it replaces only the table name
 	err := c.conn.QueryRow(getCheckpointQuery, namespace, shardID).Scan(&sequenceNumber)
-
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", nil

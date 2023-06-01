@@ -45,7 +45,7 @@ func (g *AllGroup) Start(ctx context.Context, shardc chan types.Shard) {
 	// necessarily close at the same time, so we could potentially get a
 	// thundering heard of notifications from the consumer.
 
-	var ticker = time.NewTicker(30 * time.Second)
+	ticker := time.NewTicker(30 * time.Second)
 
 	for {
 		g.findNewShards(ctx, shardc)

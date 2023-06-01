@@ -219,7 +219,6 @@ func (c *Consumer) ScanShard(ctx context.Context, shardID string, fn ScanFunc) e
 
 				if c.shardClosedHandler != nil {
 					err := c.shardClosedHandler(c.streamName, shardID)
-
 					if err != nil {
 						return fmt.Errorf("shard closed handler error: %w", err)
 					}

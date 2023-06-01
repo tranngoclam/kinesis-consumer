@@ -47,7 +47,7 @@ func TestCheckpointSetting(t *testing.T) {
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
-	var fakeDbClient = dynamodb.NewFromConfig(cfg)
+	fakeDbClient := dynamodb.NewFromConfig(cfg)
 
 	setDDBClient := WithDynamoClient(fakeDbClient)
 	setDDBClient(ckPtr)
@@ -76,7 +76,7 @@ func TestNewCheckpointWithOptions(t *testing.T) {
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
-	var fakeDbClient = dynamodb.NewFromConfig(cfg)
+	fakeDbClient := dynamodb.NewFromConfig(cfg)
 
 	setDDBClient := WithDynamoClient(fakeDbClient)
 
@@ -103,5 +103,4 @@ func TestNewCheckpointWithOptions(t *testing.T) {
 	if ckPtr.client != fakeDbClient {
 		t.Errorf("new checkpoint dynamodb client reference should be  %p. got %v", &fakeDbClient, ckPtr.client)
 	}
-
 }

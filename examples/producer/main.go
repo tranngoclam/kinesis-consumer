@@ -43,7 +43,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
-	var client = kinesis.NewFromConfig(cfg)
+	client := kinesis.NewFromConfig(cfg)
 
 	// create stream if doesn't exist
 	if err := createStream(client, *streamName); err != nil {

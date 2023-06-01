@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/kinesis"
 	"github.com/aws/aws-sdk-go-v2/service/kinesis/types"
-
 	store "github.com/tranngoclam/kinesis-consumer/store/memory"
 )
 
@@ -70,7 +69,7 @@ func TestScan(t *testing.T) {
 		res         string
 	)
 
-	var fn = func(r *Record) error {
+	fn := func(r *Record) error {
 		res += string(r.Data)
 
 		if string(r.Data) == "lastData" {
@@ -99,7 +98,7 @@ func TestScan(t *testing.T) {
 }
 
 func TestScanShard(t *testing.T) {
-	var client = &kinesisClientMock{
+	client := &kinesisClientMock{
 		getShardIteratorMock: func(ctx context.Context, params *kinesis.GetShardIteratorInput, optFns ...func(*kinesis.Options)) (*kinesis.GetShardIteratorOutput, error) {
 			return &kinesis.GetShardIteratorOutput{
 				ShardIterator: aws.String("49578481031144599192696750682534686652010819674221576194"),
@@ -133,7 +132,7 @@ func TestScanShard(t *testing.T) {
 		res         string
 	)
 
-	var fn = func(r *Record) error {
+	fn := func(r *Record) error {
 		res += string(r.Data)
 
 		if string(r.Data) == "lastData" {
@@ -165,7 +164,7 @@ func TestScanShard(t *testing.T) {
 }
 
 func TestScanShard_Cancellation(t *testing.T) {
-	var client = &kinesisClientMock{
+	client := &kinesisClientMock{
 		getShardIteratorMock: func(ctx context.Context, params *kinesis.GetShardIteratorInput, optFns ...func(*kinesis.Options)) (*kinesis.GetShardIteratorOutput, error) {
 			return &kinesis.GetShardIteratorOutput{
 				ShardIterator: aws.String("49578481031144599192696750682534686652010819674221576194"),
@@ -183,7 +182,7 @@ func TestScanShard_Cancellation(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	var res string
-	var fn = func(r *Record) error {
+	fn := func(r *Record) error {
 		res += string(r.Data)
 		cancel() // simulate cancellation while processing first record
 		return nil
@@ -205,7 +204,7 @@ func TestScanShard_Cancellation(t *testing.T) {
 }
 
 func TestScanShard_SkipCheckpoint(t *testing.T) {
-	var client = &kinesisClientMock{
+	client := &kinesisClientMock{
 		getShardIteratorMock: func(ctx context.Context, params *kinesis.GetShardIteratorInput, optFns ...func(*kinesis.Options)) (*kinesis.GetShardIteratorOutput, error) {
 			return &kinesis.GetShardIteratorOutput{
 				ShardIterator: aws.String("49578481031144599192696750682534686652010819674221576194"),
@@ -219,16 +218,16 @@ func TestScanShard_SkipCheckpoint(t *testing.T) {
 		},
 	}
 
-	var cp = store.New()
+	cp := store.New()
 
 	c, err := New("myStreamName", WithClient(client), WithStore(cp))
 	if err != nil {
 		t.Fatalf("new consumer error: %v", err)
 	}
 
-	var ctx, cancel = context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(context.Background())
 
-	var fn = func(r *Record) error {
+	fn := func(r *Record) error {
 		if aws.ToString(r.SequenceNumber) == "lastSeqNum" {
 			cancel()
 			return ErrSkipCheckpoint
@@ -249,7 +248,7 @@ func TestScanShard_SkipCheckpoint(t *testing.T) {
 }
 
 func TestScanShard_ShardIsClosed(t *testing.T) {
-	var client = &kinesisClientMock{
+	client := &kinesisClientMock{
 		getShardIteratorMock: func(ctx context.Context, params *kinesis.GetShardIteratorInput, optFns ...func(*kinesis.Options)) (*kinesis.GetShardIteratorOutput, error) {
 			return &kinesis.GetShardIteratorOutput{
 				ShardIterator: aws.String("49578481031144599192696750682534686652010819674221576194"),
@@ -268,7 +267,7 @@ func TestScanShard_ShardIsClosed(t *testing.T) {
 		t.Fatalf("new consumer error: %v", err)
 	}
 
-	var fn = func(r *Record) error {
+	fn := func(r *Record) error {
 		return nil
 	}
 
@@ -279,7 +278,7 @@ func TestScanShard_ShardIsClosed(t *testing.T) {
 }
 
 func TestScanShard_ShardIsClosed_WithShardClosedHandler(t *testing.T) {
-	var client = &kinesisClientMock{
+	client := &kinesisClientMock{
 		getShardIteratorMock: func(ctx context.Context, params *kinesis.GetShardIteratorInput, optFns ...func(*kinesis.Options)) (*kinesis.GetShardIteratorOutput, error) {
 			return &kinesis.GetShardIteratorOutput{
 				ShardIterator: aws.String("49578481031144599192696750682534686652010819674221576194"),
@@ -293,7 +292,7 @@ func TestScanShard_ShardIsClosed_WithShardClosedHandler(t *testing.T) {
 		},
 	}
 
-	var fn = func(r *Record) error {
+	fn := func(r *Record) error {
 		return nil
 	}
 
@@ -316,7 +315,7 @@ func TestScanShard_ShardIsClosed_WithShardClosedHandler(t *testing.T) {
 }
 
 func TestScanShard_GetRecordsError(t *testing.T) {
-	var client = &kinesisClientMock{
+	client := &kinesisClientMock{
 		getShardIteratorMock: func(ctx context.Context, params *kinesis.GetShardIteratorInput, optFns ...func(*kinesis.Options)) (*kinesis.GetShardIteratorOutput, error) {
 			return &kinesis.GetShardIteratorOutput{
 				ShardIterator: aws.String("49578481031144599192696750682534686652010819674221576194"),
@@ -331,7 +330,7 @@ func TestScanShard_GetRecordsError(t *testing.T) {
 		},
 	}
 
-	var fn = func(r *Record) error {
+	fn := func(r *Record) error {
 		return nil
 	}
 

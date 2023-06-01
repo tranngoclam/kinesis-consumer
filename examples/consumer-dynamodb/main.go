@@ -71,13 +71,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("new kinesis config error: %v", err)
 	}
-	var myKsis = kinesis.NewFromConfig(kcfg)
+	myKsis := kinesis.NewFromConfig(kcfg)
 
 	dcfg, err := newConfig(*ddbEndpoint, *awsRegion)
 	if err != nil {
 		log.Fatalf("new ddb config error: %v", err)
 	}
-	var myDdbClient = dynamodb.NewFromConfig(dcfg)
+	myDdbClient := dynamodb.NewFromConfig(dcfg)
 
 	// ddb checkpoint table
 	if err := createTable(myDdbClient, *tableName); err != nil {
@@ -91,7 +91,7 @@ func main() {
 	}
 
 	// expvar counter
-	var counter = expvar.NewMap("counters")
+	counter := expvar.NewMap("counters")
 
 	// consumer
 	c, err := consumer.New(

@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf("checkpoint error: %v", err)
 	}
 
-	var counter = expvar.NewMap("counters")
+	counter := expvar.NewMap("counters")
 
 	resolver := aws.EndpointResolverFunc(func(service, region string) (aws.Endpoint, error) {
 		return aws.Endpoint{
@@ -54,7 +54,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
-	var client = kinesis.NewFromConfig(cfg)
+	client := kinesis.NewFromConfig(cfg)
 
 	// consumer
 	c, err := consumer.New(

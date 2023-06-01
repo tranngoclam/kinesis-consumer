@@ -12,7 +12,7 @@ import (
 // listShards pulls a list of Shard IDs from the kinesis api
 func listShards(ctx context.Context, ksis kinesisClient, streamName string) ([]types.Shard, error) {
 	var ss []types.Shard
-	var listShardsInput = &kinesis.ListShardsInput{
+	listShardsInput := &kinesis.ListShardsInput{
 		StreamName: aws.String(streamName),
 	}
 
